@@ -21,7 +21,7 @@ Returns the module.
 ## new csp.Channel(size=0)
 Instantiates a new CSP channel with an optional fixed size.
 
-## Chan.prototype.put(val, block=true)
+## Chan.prototype.put(val, [block=true])
 Put an item in the channel, optionally blocking until space is available, and
 then, resolve. If `block == false` and no space is available, reject.
 
