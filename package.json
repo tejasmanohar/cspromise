@@ -19,7 +19,7 @@
   "homepage": "https://github.com/tejasmanohar/cspromise",
   "dependencies": {
     "create-error": "^0.3.1",
-    "qevented": "^1.0.1"
+    "qevented": "^1.0.2"
   },
   "devDependencies": {
     "@segment/eslint-config": "^3.4.0",
