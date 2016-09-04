@@ -1,0 +1,7 @@
+{
+    "parser": "babel-eslint",
+    "extends": "@segment/eslint-config/server",
+    "rules": {
+        "no-unused-vars": [ "error", { "varsIgnorePattern": "_" } ]
+    }
+}
