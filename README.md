@@ -40,13 +40,11 @@ CSP makes it easy to communicate between Promise coroutines and moreover,
 "control flows". Read more on [why CSP matters](https://reaktor.com/blog/why-csp-matters-i-keeping-things-in-sync/).
 
 ## Why not use [js-csp]?
-[js-csp] and CSPromise are very similar conceptually, but [js-csp] invents its
-own asynchronous control flow, leaving a community of Promise modules behind.
-For example, instead of [js-csp]'s [timeout function](https://github.com/ubolonton/js-csp/blob/master/doc/basic.md#timeoutmsecs),
-you can use [delay](https://www.npmjs.com/package/delay). Why reinvent the wheel?
+[js-csp] and CSPromise align conceptually, but [js-csp] invents its
+own asynchronous control flow, leaving a community of Promise-based code behind.
 
 
 [async/await]: https://zeit.co/blog/async-and-await
 [Bluebird]: http://bluebirdjs.com/docs/api/promise.coroutine.html
 [co]: https://github.com/tj/co
-[js-scp]: https://github.com/ubolonton/js-csp
+[js-csp]: https://github.com/ubolonton/js-csp
