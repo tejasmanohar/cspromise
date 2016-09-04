@@ -25,11 +25,11 @@ Instantiates a new CSP channel with an optional fixed size.
 Put an item in the channel, optionally blocking until space is available, and
 then, resolve. If `block == false` and no space is available, reject.
 
-# Chan.prototype.take([block=true])
+## Chan.prototype.take([block=true])
 Take an item from the channel, optionally blocking until a value is sent, and
 then, resolve. If `block == false` and no space is available, reject.
 
-# Chan.prototype.close()
+## Chan.prototype.close()
 Close channel. Receiving or sending on this channel will reject.
 
 
