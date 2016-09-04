@@ -1,5 +1,5 @@
 
-# CSPromise [![Build Status](https://travis-ci.org/tejasmanohar/cspromise.svg?branch=master)](https://travis-ci.org/tejasmanohar/cspromise) [![Coverage Status](https://img.shields.io/coveralls/jekyll/jekyll.svg)](https://coveralls.io/github/tejasmanohar/cspromise)
+# CSPromise [![Build Status](https://travis-ci.org/tejasmanohar/cspromise.svg?branch=master)](https://travis-ci.org/tejasmanohar/cspromise) [![Coverage Status](https://coveralls.io/repos/github/tejasmanohar/cspromise/badge.svg?branch=master)](https://coveralls.io/github/tejasmanohar/cspromise?branch=master)
 
 CSPromise implements CSP constructs (found in e.g. Go, Clojure, etc.) on top of
 JavaScript (Node.js or browser) Promises.
