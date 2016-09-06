@@ -55,11 +55,8 @@ main()
 To try it out yourself,
 ```
 $ git clone https://github.com/tejasmanohar/cspromise.git
-# ...
 $ cd cspromise
-# ...
 $ npm install
-# ...
 $ ./node_modules/.bin/babel-node examples/ping_pong.js
 ping: 1
 pong: 2
