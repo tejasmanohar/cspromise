@@ -36,8 +36,11 @@ class Channel {
     this._queue = new QEmitter()
     Promise.promisifyAll(this._queue)
 
-    this._lock = new Semaphore(1)
-    Promise.promisifyAll(this._lock)
+    this._takeLock = new Semaphore(1)
+    Promise.promisifyAll(this._takeLock)
+
+    this._putLock = new Semaphore(1)
+    Promise.promisifyAll(this._putLock)
   }
 
   /**
@@ -52,12 +55,17 @@ class Channel {
   async put (val) {
     if (this.closed) return
 
-    if (this.size !== null && this._buf.length >= this.size) {
-      await this._queue.onAsync('space')
-    }
+    try {
+      await this._putLock.acquireAsync()
+      if (this.size !== null && this._buf.length >= this.size) {
+        await this._queue.onAsync('space')
+      }
 
-    this._buf.push(val)
-    this._queue.emit('data')
+      this._buf.push(val)
+      this._queue.emit('data')
+    } finally {
+      this._putLock.release()
+    }
   }
 
   /**
@@ -71,7 +79,7 @@ class Channel {
     if (this.closed) return CLOSED
 
     try {
-      await this._lock.acquireAsync()
+      await this._takeLock.acquireAsync()
       if (!this._buf.length) {
         await this._queue.onAsync('data')
       }
@@ -80,7 +88,7 @@ class Channel {
       this._queue.emit('space')
       return val
     } finally {
-      this._lock.release()
+      this._takeLock.release()
     }
   }
 
