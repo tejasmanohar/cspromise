@@ -2,11 +2,12 @@
 NBIN := node_modules/.bin
 SRC := $(shell find src -type f -name "*.js")
 TESTS := $(shell find test -type f -name "*.test.js")
-ALL := $(LIBS) $(TESTS)
+EX := $(shell find examples -type f -name "*.js")
+ALL := $(SRC) $(TESTS) $(EX)
 
 # Executables
 BABEL := $(NBIN)/babel
-ESLINT := $(NBIN)/eslint
+STANDARD := $(NBIN)/standard
 DEPCHECK := $(NBIN)/npm-check
 NYC := $(NBIN)/nyc
 AVA := $(NBIN)/ava -v
@@ -17,7 +18,7 @@ install:
 	@npm install
 
 # Build w/ babel.
-build:
+build: install
 	@$(BABEL) src -d lib
 
 # Run unit tests.
@@ -30,11 +31,11 @@ coverage: install
 
 # Review code.
 lint: install
-	@$(ESLINT) $(ALL)
+	@$(STANDARD) $(ALL)
 
 # Fix as many linter errors as possible.
 fmt: install
-	@$(ESLINT) --fix $(ALL)
+	@$(STANDARD) --fix $(ALL)
 
 # Test code.
 test: lint test-unit
@@ -43,9 +44,15 @@ test: lint test-unit
 test-ci: test coverage
 	@$(NYC) report -r=text-lcov | $(COVERALLS)
 
+# Push.
+ship: build
+	# update "version" in package.json
+	# git release (tag, push)
+	npm publish
+
 # Bye, temp files.
 clean:
 	@rm -rf coverage .nyc_output node_modules
 
 # Don't get confused.
-.PHONY: test coverage
+.PHONY: test coverage lint

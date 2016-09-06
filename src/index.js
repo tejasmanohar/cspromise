@@ -1,13 +1,16 @@
-
-'use strict';
-
 /**
  * Module dependencies.
  */
 
-import Emitter from 'qevented';
-import errors from './errors';
+import Semaphore from 'node-semaphore'
+import QEmitter from 'qevented'
+import Promise from 'bluebird'
 
+/**
+ * Constants.
+ */
+
+const CLOSED = Symbol('closed')
 
 /**
  * Channel.
@@ -25,68 +28,60 @@ class Channel {
    *
    * @public
    */
-  constructor(size=null) {
-    this.size = size;
-    this.closed = false;
-    this._buf = [];
-    this._events = new Emitter();
+  constructor (size = null) {
+    this.size = size
+    this.closed = false
+    this._buf = []
+
+    this._queue = new QEmitter()
+    Promise.promisifyAll(this._queue)
+
+    this._lock = new Semaphore(1)
+    Promise.promisifyAll(this._lock)
   }
 
   /**
    * Push value to channel.
    *
    * @param {*} val - value to push to channel.
-   * @param {Boolean} [block=true] - wait till available or throw?
    * @returns {Promise}
-   * @throws
+   * @throws {ChannelClosedError} - Cannot set on closed channel.
    *
    * @public
    */
-  put(val, block=true) {
-    return new Promise((resolve, reject) => {
-      const done = () => {
-        this._buf.push(val);
-        this._events.emit('data');
-        resolve();
-      };
+  async put (val) {
+    if (this.closed) return
 
-      if (this.closed) {
-        reject(new errors.Closed('Cannot set on closed channel.'));
-      } else if (this.size === null || this._buf.length < this.size) {
-        done();
-      } else if (block) {
-        this._events.on('space', done);
-      } else {
-        reject(new errors.Full('Cannot put on full channel.'))
-      }
-    });
+    if (this.size !== null && this._buf.length >= this.size) {
+      await this._queue.onAsync('space')
+    }
+
+    this._buf.push(val)
+    this._queue.emit('data')
   }
-
 
   /**
    * Shift value off channel.
    *
-   * @param  {Boolean} [block=true] - wait till available or throw?
    * @returns {Promise} - done
    *
    * @public
    */
-  take(block=true) {
-    return new Promise((resolve, reject) => {
-      const done = () => {
-        const val = this._buf.shift();
-        this._events.emit('space');
-        resolve(val);
-      };
+  async take () {
+    if (this.closed) return CLOSED
 
-      if (this._buf.length) {
-        done();
-      } else if (block) {
-        this._events.on('data', done);
-      } else {
-        reject(new errors.Empty('Cannot take on empty channel.'));
+    try {
+      await this._lock.acquireAsync()
+      if (!this._buf.length) {
+        await this._queue.onAsync('data')
       }
-    });
+
+      const val = this._buf.shift()
+      this._queue.emit('space')
+      return val
+    } finally {
+      this._lock.release()
+    }
   }
 
   /**
@@ -94,12 +89,11 @@ class Channel {
    *
    * @public
    */
-  close() {
-    this.closed = true;
+  close () {
+    this.closed = true
   }
 
 }
-
 
 /**
  * Exports.
@@ -107,5 +101,5 @@ class Channel {
 
 export default {
   Channel,
-  errors
+  CLOSED
 }
