@@ -7,21 +7,21 @@ CSPromise implements CSP constructs (found in e.g. Go, Clojure, etc.) on top of 
 
 # Features
 
-- *Easy.* Designed (but not required!) to be used with Promise-based coroutines.
-- *Standard.* Drop-in alongside existing Promises (native or polyfilled).
-- *Fast.* As performant as a Promise.
+- **Easy.** Designed (but not required!) to be used with Promise-based coroutines.
+- **Standard.** Drop-in alongside existing Promises (native or polyfilled).
+- **Fast.** As performant as a Promise.
 
 
-# Example
+# Usage
 
 ```js
-const csp = require('cspromise');
+import csp from 'cspromise'
 ```
 
 Ping Pong (ported from [js-csp] and further, [Go](https://talks.golang.org/2013/advconc.slide#6)).
 
 ```js
-const delay = require('delay');
+import delay from 'delay'
 
 async function main() {
   const table = new csp.Channel();
