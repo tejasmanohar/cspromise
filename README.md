@@ -23,33 +23,33 @@ Ping Pong (ported from [js-csp] and further, [Go](https://talks.golang.org/2013/
 ```js
 import delay from 'delay'
 
-async function main() {
-  const table = new csp.Channel();
+async function main () {
+  const table = new csp.Channel()
 
-  play(table, 'ping');
-  play(table, 'pong');
+  play(table, 'ping')
+  play(table, 'pong')
 
-  await table.put({ hits: 0 });
-  await delay(1000);
-  table.close();
+  await table.put({ hits: 0 })
+  await delay(1000)
+  table.close()
 }
 
-async function play(table, name) {
+async function play (table, name) {
   while (true) {
-    const ball = await table.take();
-    if (ball == csp.CLOSED) {
+    const ball = await table.take()
+    if (ball === csp.CLOSED) {
       console.log(`${name}: table's gone.`)
-      break;
+      break
     }
-    ball.hits++;
+    ball.hits++
 
-    console.log(`${name}: ${ball.hits}`);
-    await delay(100);
-    await table.put(ball);
+    console.log(`${name}: ${ball.hits}`)
+    await delay(100)
+    await table.put(ball)
   }
 }
 
-main();
+main()
 ```
 
 To try it out yourself,
